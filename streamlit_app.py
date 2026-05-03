@@ -126,6 +126,106 @@ if data is not None and 'team_name_home' in data.columns:
 else:
     home_teams = []
 
+# Define sample NBA player profiles for player prediction
+PLAYER_PROFILES = {
+    "LeBron James": {
+        "minutes_played": 36,
+        "field_goals_made": 9,
+        "field_goals_attempted": 19,
+        "three_pointers_made": 2,
+        "free_throws_made": 5,
+        "assists": 9,
+        "rebounds": 10,
+        "steals": 1,
+        "blocks": 1,
+        "turnovers": 3
+    },
+    "Luka Doncic": {
+        "minutes_played": 35,
+        "field_goals_made": 10,
+        "field_goals_attempted": 22,
+        "three_pointers_made": 3,
+        "free_throws_made": 6,
+        "assists": 8,
+        "rebounds": 9,
+        "steals": 1,
+        "blocks": 0,
+        "turnovers": 3
+    },
+    "Stephen Curry": {
+        "minutes_played": 33,
+        "field_goals_made": 10,
+        "field_goals_attempted": 23,
+        "three_pointers_made": 5,
+        "free_throws_made": 3,
+        "assists": 7,
+        "rebounds": 5,
+        "steals": 2,
+        "blocks": 0,
+        "turnovers": 2
+    },
+    "Giannis Antetokounmpo": {
+        "minutes_played": 34,
+        "field_goals_made": 11,
+        "field_goals_attempted": 19,
+        "three_pointers_made": 1,
+        "free_throws_made": 8,
+        "assists": 6,
+        "rebounds": 12,
+        "steals": 1,
+        "blocks": 2,
+        "turnovers": 3
+    },
+    "Kevin Durant": {
+        "minutes_played": 32,
+        "field_goals_made": 10,
+        "field_goals_attempted": 19,
+        "three_pointers_made": 3,
+        "free_throws_made": 4,
+        "assists": 5,
+        "rebounds": 7,
+        "steals": 1,
+        "blocks": 2,
+        "turnovers": 2
+    },
+    "Jayson Tatum": {
+        "minutes_played": 34,
+        "field_goals_made": 9,
+        "field_goals_attempted": 20,
+        "three_pointers_made": 2,
+        "free_throws_made": 5,
+        "assists": 5,
+        "rebounds": 9,
+        "steals": 1,
+        "blocks": 1,
+        "turnovers": 2
+    },
+    "Shai Gilgeous-Alexander": {
+        "minutes_played": 33,
+        "field_goals_made": 10,
+        "field_goals_attempted": 21,
+        "three_pointers_made": 2,
+        "free_throws_made": 7,
+        "assists": 6,
+        "rebounds": 5,
+        "steals": 2,
+        "blocks": 0,
+        "turnovers": 2
+    },
+    "Custom Player": {
+        "minutes_played": 30,
+        "field_goals_made": 5,
+        "field_goals_attempted": 12,
+        "three_pointers_made": 2,
+        "free_throws_made": 2,
+        "assists": 3,
+        "rebounds": 5,
+        "steals": 1,
+        "blocks": 1,
+        "turnovers": 1
+    }
+}
+
 # Sidebar
 with st.sidebar:
     st.markdown("## Navigation")
@@ -256,21 +356,33 @@ elif page == "Player Prediction":
     st.markdown("## Predict Player Points")
     st.markdown("Estimate how many points a player will score based on performance statistics")
     
+    # Player selection
+    selected_player = st.selectbox(
+        "Select a Player",
+        list(PLAYER_PROFILES.keys()),
+        key="player_select"
+    )
+    
+    # Load player profile stats
+    player_stats = PLAYER_PROFILES[selected_player]
+    
+    st.markdown(f"### {selected_player} - Adjust Statistics")
+    
     col1, col2 = st.columns(2)
     
     with col1:
-        minutes_played = st.number_input("Minutes Played", 0, 48, 30)
-        fgm = st.number_input("Field Goals Made", 0, 20, 5)
-        fga = st.number_input("Field Goals Attempted", 0, 30, 12)
-        fg3m = st.number_input("3-Pointers Made", 0, 10, 2)
-        ftm = st.number_input("Free Throws Made", 0, 15, 2)
+        minutes_played = st.number_input("Minutes Played", 0, 48, player_stats["minutes_played"])
+        fgm = st.number_input("Field Goals Made", 0, 20, player_stats["field_goals_made"])
+        fga = st.number_input("Field Goals Attempted", 0, 30, player_stats["field_goals_attempted"])
+        fg3m = st.number_input("3-Pointers Made", 0, 10, player_stats["three_pointers_made"])
+        ftm = st.number_input("Free Throws Made", 0, 15, player_stats["free_throws_made"])
     
     with col2:
-        assists = st.number_input("Assists", 0, 15, 3)
-        rebounds = st.number_input("Rebounds", 0, 20, 5)
-        steals = st.number_input("Steals", 0, 5, 1)
-        blocks = st.number_input("Blocks", 0, 5, 1)
-        turnovers = st.number_input("Turnovers", 0, 8, 1)
+        assists = st.number_input("Assists", 0, 15, player_stats["assists"])
+        rebounds = st.number_input("Rebounds", 0, 20, player_stats["rebounds"])
+        steals = st.number_input("Steals", 0, 5, player_stats["steals"])
+        blocks = st.number_input("Blocks", 0, 5, player_stats["blocks"])
+        turnovers = st.number_input("Turnovers", 0, 8, player_stats["turnovers"])
     
     model_choice_player = st.selectbox(
         "Select Model for Prediction",
@@ -305,8 +417,11 @@ elif page == "Player Prediction":
             
             pred_points = model_p.predict(X_scaled_player)[0]
             
-            st.markdown("### Predicted Points")
-            st.metric("Estimated Points", f"{max(0, pred_points):.2f}")
+            col1, col2 = st.columns([2, 1])
+            with col1:
+                st.markdown(f"### Prediction for {selected_player}")
+            with col2:
+                st.metric("Estimated Points", f"{max(0, pred_points):.2f}")
             
             # Player stats summary
             st.markdown("### Player Statistics")
