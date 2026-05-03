@@ -1,0 +1,5 @@
+model,train_accuracy,test_accuracy,precision,recall,f1_score,overfit_gap
+Baseline Logistic Regression,0.619,0.6189,0.6189,1.0,0.7646,0.0
+Optimized Logistic Regression,0.6266,0.6274,0.6351,0.9351,0.7564,-0.0008
+Random Forest (Tuned),0.8871,0.5967,0.6761,0.6683,0.6722,0.2904
+Decision Tree,0.8873,0.5912,0.6806,0.6397,0.6595,0.2961

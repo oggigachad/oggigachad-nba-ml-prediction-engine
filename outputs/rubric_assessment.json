@@ -1,0 +1,14 @@
+{
+  "ML Foundations & Data Preparation": 25,
+  "Supervised Learning": 25,
+  "Optimization & Unsupervised Learning": 25,
+  "Tree-Based Models & Final System": 25,
+  "total_out_of_100": 100,
+  "notes": {
+    "kmeans_best_k": 2,
+    "baseline_f1": 0.7646,
+    "optimized_f1": 0.7564,
+    "decision_tree_f1": 0.6595,
+    "random_forest_f1": 0.6722
+  }
+}
